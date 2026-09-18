@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentShield v2</title><link rel="stylesheet" href="/static/app.css"></head><body>
+<header><b>◈ IntentShield <small>v2</small></b><span>API <i>ONLINE</i></span></header><main>
+<section class="hero"><div><label>FINANCIAL INTENT SECURITY</label><h1>Make the transaction prove it matches the human's intent.</h1><p>Signed authorization, delegated AI-agent scope, transaction verification and a fraud-journey graph.</p></div><div><button onclick="createAgent()">Create AI agent</button> <button class="primary" onclick="run('attack')">Run attack</button> <button onclick="run('legit')">Legitimate</button></div></section>
+<section class="cards"><div><small>INTENT</small><b id="iid">—</b></div><div><small>AGENT</small><b id="aid">—</b></div><div><small>DECISION</small><b id="decision">READY</b><em id="risk"></em></div></section>
+<section class="panel"><h2>Human intent</h2><pre id="intent">{}</pre><h2>Actual action</h2><pre id="actual">{}</pre></section>
+<section class="panel"><h2>Fraud journey graph</h2><div id="graph" class="graph"></div></section>
+<section class="panel"><h2>API response</h2><pre id="api">{}</pre><a href="/docs" target="_blank">Open Swagger API →</a></section>
+<section class="panel"><h2>Passkey confirmation</h2><p>Uses the browser WebAuthn API. Production requires server-side credential verification and HTTPS.</p><button onclick="passkey()">Register passkey</button><span id="ps"></span></section>
+</main><footer>Research prototype — no real payment rails.</footer><script src="/static/app.js"></script></body></html>
