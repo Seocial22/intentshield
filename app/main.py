@@ -62,6 +62,23 @@ def verify_signature(token):
     except Exception as e: raise HTTPException(400,"Invalid signature")
 
 app=FastAPI(title="IntentShield API",version="0.2.0")
+
+@app.middleware("http")
+async def fix_path_middleware(request: Request, call_next):
+    forwarded = request.headers.get("x-matched-path") or request.headers.get("x-forwarded-uri")
+    if forwarded and not forwarded.startswith("/api/index.py"):
+        request.scope["path"] = forwarded.split("?")[0]
+    else:
+        path = request.scope.get("path", "")
+        for prefix in ("/api/index.py", "/api/index", "/api"):
+            if path == prefix:
+                request.scope["path"] = "/"
+                break
+            elif path.startswith(prefix + "/"):
+                request.scope["path"] = path[len(prefix):]
+                break
+    return await call_next(request)
+
 app.mount("/static",StaticFiles(directory=os.path.join(APP_DIR,"static")),name="static")
 templates=Jinja2Templates(directory=os.path.join(APP_DIR,"templates"))
 
@@ -76,6 +93,9 @@ class TxIn(BaseModel):
     initiator_type:str="HUMAN"; agent_id:Optional[str]=None; remote_access:bool=False
     new_beneficiary:bool=False; external_scam_signal:bool=False
 
+@app.get("/api/index.py", response_class=HTMLResponse)
+@app.get("/api/index", response_class=HTMLResponse)
+@app.get("/api", response_class=HTMLResponse)
 @app.get("/",response_class=HTMLResponse)
 def home(request:Request):
     return templates.TemplateResponse("index.html",{"request":request})
